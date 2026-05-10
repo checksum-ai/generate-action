@@ -1,0 +1,46 @@
+name: 'Checksum AI Test Generation'
+description: 'Trigger Checksum AI test generation for a pull request. The agent reads the PR diff and opens a tests-repo PR with the generated coverage.'
+author: 'Checksum AI'
+
+branding:
+  icon: 'edit-3'
+  color: 'blue'
+
+inputs:
+  api-key:
+    description: 'Checksum AI API key. Pass via a secret (see README for an example).'
+    required: true
+
+  pr-number:
+    description: 'Source PR number. Auto-detected from the workflow event when running on pull_request / pull_request_target. On push, looked up via the GitHub API.'
+    required: false
+  repo-name:
+    description: 'Source repository in `<owner>/<repo>` form. Auto-detected from `GITHUB_REPOSITORY` when omitted.'
+    required: false
+  branch:
+    description: 'PR head branch. Auto-detected from the workflow event (`GITHUB_HEAD_REF` on pull_request, `GITHUB_REF_NAME` on push) when omitted.'
+    required: false
+  metadata:
+    description: 'JSON object of free-form metadata attached to the generation session, useful for tracing or correlation IDs.'
+    required: false
+
+  api-base-url:
+    description: 'Checksum AI API base URL.'
+    required: false
+    default: 'https://api.checksum.ai'
+  github-token:
+    description: 'Token used to look up the open PR for the current branch when running on a `push` event (so `pr-number` can be auto-resolved). Defaults to the workflow''s GITHUB_TOKEN. Needs `pull-requests: read` permission. Ignored on `pull_request` events.'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  batch-id:
+    description: 'Generation batch UUID. Use it to poll progress via /public-api/v1/auto-generate/batch/{batchId}.'
+  session-id:
+    description: 'Aiagents session UUID for the generation run.'
+  session-url:
+    description: 'Webapp link to the agent session.'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
