@@ -37,7 +37,7 @@ outputs:
   batch-id:
     description: 'Generation batch UUID. Use it to poll progress via /public-api/v1/auto-generate/batch/{batchId}.'
   session-id:
-    description: 'Aiagents session UUID for the generation run.'
+    description: 'Agent session UUID for the generation run.'
   session-url:
     description: 'Webapp link to the agent session.'
 

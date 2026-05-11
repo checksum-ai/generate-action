@@ -1,6 +1,6 @@
 # `checksum-ai/generate-action`
 
-GitHub Action that triggers Checksum AI test generation for a pull request. The agent reads the PR diff in its sandbox, generates end-to-end tests covering the affected user flows, and opens a tests-repo PR with the new coverage.
+GitHub Action that triggers Checksum AI test generation for a pull request. The agent reads the PR diff, generates end-to-end tests covering the affected user flows, and opens a tests-repo PR with the new coverage.
 
 ## Quick start
 
@@ -53,14 +53,14 @@ That's it. PR number, repository, and branch are auto-resolved from the workflow
 | Output | Description |
 |---|---|
 | `batch-id` | Generation batch UUID. Poll progress via `GET /public-api/v1/auto-generate/batch/{batchId}`. |
-| `session-id` | Aiagents session UUID. |
+| `session-id` | Agent session UUID. |
 | `session-url` | Webapp link to the agent session. |
 
 ## How it works
 
-The action calls `POST /public-api/v1/auto-generate` with the resolved PR coordinates. The backend creates a generation batch, dispatches a CQ end-to-end-standard session, and posts a sticky progress comment on the source PR. When the agent finishes, a PR with the generated tests is opened on your tests repository.
+The action calls `POST /public-api/v1/auto-generate` with the resolved PR coordinates. Checksum AI then runs a generation session against the PR diff and posts progress comments back on the source PR. When the session finishes, a pull request with the generated tests is opened on your tests repository.
 
-The action exits as soon as the dispatch is accepted (~15s). Progress is reported on the source PR via the sticky comment — there's no need to keep a runner allocated while the agent works.
+The action exits as soon as the dispatch is accepted (~15s). Progress is reported on the source PR via the progress comment — there's no need to keep a runner allocated while generation runs.
 
 ## Setting up secrets
 
